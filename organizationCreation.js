@@ -1,6 +1,7 @@
 const {By, Builder} = require('selenium-webdriver');
 const assert = require("assert");
 const { expect, should } = require('chai');
+const { equal } = require('assert');
 
 
 
@@ -13,41 +14,43 @@ const { expect, should } = require('chai');
 
     after(async () => await driver.quit());
 
+  
+ 
     it('Community Creatioin', async function () {
       this.timeout(0);
 
       await driver.get('https://staging.pasalo.pro');
 
       await driver.manage().setTimeouts({implicit: 10000});
-      let emailField = await driver.findElement(By.xpath('//input[@placeholder="Email address"]'));
+      let emailField = await driver.findElement(By.xpath("//input[@placeholder=\"Email address\"]"));
       await emailField.sendKeys('celadonautotest@gmail.com');
 
       
-      let loginField = await driver.findElement(By.xpath('//input[@placeholder="Password"]'));
+      let loginField = await driver.findElement(By.xpath("//input[@placeholder=\"Password\"]"));
       await loginField.sendKeys('Autotesting Password');
       
-      let submitButton = await driver.findElement(By.xpath('//div/button'));
+      
+      let submitButton = await driver.findElement(By.xpath("//div[@class=\"button\"]//button"));
       await submitButton.click();
 
       
       await driver.manage().setTimeouts({implicit: 10000});
-      let loggedOrganisationCheck = await driver.findElement(By.xpath('//select/option'));
+      let loggedOrganisationCheck = await driver.findElement(By.xpath("//select/option"));
       expect(Boolean(loggedOrganisationCheck.isEnabled())).to.be.equal(true)
 
-      let cummunitiesButton = await driver.findElement(By.css('div.navigations > div:nth-child(2) > a > div > button'));
+      let cummunitiesButton = await driver.findElement(By.xpath("//button[text()=\"Communities\"]/../."));
       await cummunitiesButton.click();
 
       await driver.manage().setTimeouts({implicit: 10000});
-      let selectCommunity = await driver.findElement(By.css('div.items > a:nth-child(3)'));
+      let selectCommunity = await driver.findElement(By.xpath("//div[@class=\"item \"]//div[text()=\"Autotest community\"]"));
       await selectCommunity.click();
      
       await driver.manage().setTimeouts({implicit: 10000});
       let currentUrl = await driver.getCurrentUrl();
       expect(currentUrl).to.be.equal('https://staging.pasalo.pro/communities/map/1835')
-      //пытался проверять кнопку Выбора Комьюнити
-      //expect(Boolean(selectCommunity.isSelected())).to.be.equal(true)
 
-      let addCommunity = await driver.findElement(By.css('div.heading > div.add'));
+
+      let addCommunity = await driver.findElement(By.xpath("//div[@class=\"add\"]//i[@class=\"material-icons\"]"));
       await addCommunity.click();
 
       await driver.manage().setTimeouts({implicit: 10000});
@@ -56,30 +59,58 @@ const { expect, should } = require('chai');
 
       //ВВодим данные комьюнити
       await driver.manage().setTimeouts({implicit: 10000});
-      let communityName = await driver.findElement(By.xpath('//input[@placeholder="Enter a name for the community"]'));
+      let communityName = await driver.findElement(By.xpath("//input[@placeholder=\"Enter a name for the community\"]"));
       await communityName.sendKeys('JavaScript Community');
 
-      //скопировал xPath
-      let communityStatus = await driver.findElement(By.css('div.input-group:nth-child(4) > div'));
+
+      let communityPrivacy = await driver.findElement(By.xpath("//p[text()=\"Privacy\"]//..//input[@class=\"rw-dropdownlist-search\"]"));
+      await communityPrivacy.click();
+
+      await driver.manage().setTimeouts({implicit: 10000}); 
+      let communityPrivacySelect = await driver.findElement(By.xpath("//div[text()=\"Public\"]"));
+      await communityPrivacySelect.click();
+
+
+      let communityStatus = await driver.findElement(By.xpath("//p[text()=\"Status\"]//..//input[@class=\"rw-dropdownlist-search\"]"));
       await communityStatus.click();
 
       await driver.manage().setTimeouts({implicit: 10000}); 
-      let communityStatusSelect = await driver.findElement(By.css('div.rw-list > div.rw-list-option:nth-child(2)'));
+      let communityStatusSelect = await driver.findElement(By.xpath("//div[text()=\"Inactive\"]"));
       await communityStatusSelect.click();
 
       let checkInactiveStatus = await driver.findElement(By.xpath('//span[text()="Inactive"]'))
       expect(Boolean(checkInactiveStatus.isDisplayed())).to.be.equal(true);
 
       await driver.manage().setTimeouts({implicit: 10000});
-      let createCommunityButton = await driver.findElement(By.css('div.footer > div.button.cyan'));
+      let createCommunityButton = await driver.findElement(By.xpath("//div[@class=\"button cyan\"]"));
       await createCommunityButton.click();
 
       await driver.manage().setTimeouts({implicit: 10000});
-      let createdCommunityCheck = await driver.findElements(By.xpath('//div[text()="Daria test"]'));
+      let selectCommunityButton = await driver.findElement(By.xpath("//div[@class=\"item active\"]//div[text()=\"JavaScript Community\"]"));
+      await selectCommunityButton.click();
 
+      await driver.manage().setTimeouts({implicit: 10000});
+      let communityNameCheck = await driver.findElement(By.name('name'));
+      let communityNameValue = await communityNameCheck.getAttribute('value')
+      expect(communityNameValue).to.be.equal('JavaScript Community');
+
+      let communityPrivacyCheck = await driver.findElement(By.xpath("//span[text()=\"Public\"]"))
+      let communityPrivacyValue = await communityPrivacyCheck.getText()
+      console.log(communityPrivacyValue)
+      expect(communityPrivacyValue).to.be.equal('Public')
+      
+      let communityStatusCheck = await driver.findElement(By.xpath("//span[text()=\"Inactive\"]"))
+      let communityStatusValue = await communityStatusCheck.getText()
+      console.log(communityStatusValue)
+      expect(communityStatusValue).to.be.equal('Inactive')
     });
 
-  });
+
+    
+    });
+
+ 
+
 
 // //*[@id="3"]/div[1]/div/p/text()
   // css с барузера#\33  > div.Toastify__toast-body > div > p
