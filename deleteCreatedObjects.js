@@ -20,7 +20,8 @@ async function checkElementPresence(locator) {
 }
 
 
-  describe('delete Created Obejecy', function () {
+
+  describe('delete Created Objects', function () {
     let driver;
 
     before(async function () {
@@ -29,7 +30,7 @@ async function checkElementPresence(locator) {
 
     after(async () => await driver.quit());
 
-    it('Delete Custom Field adn Organisation', async function () {
+    it('Delete Custom Field', async function () {
       this.timeout(0);
 
       await driver.get('https://staging.pasalo.pro');
@@ -70,6 +71,10 @@ async function checkElementPresence(locator) {
       
       checkElementPresence("//div[text()=\"JS dropdown field\"]") 
 
+    });
+
+    it('Delete Community', async function () {
+      this.timeout(0);
 
 
       let cummunitiesButton = await driver.findElement(By.xpath("//button[text()=\"Communities\"]/../."));
